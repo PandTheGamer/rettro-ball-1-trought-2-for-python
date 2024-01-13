@@ -30,7 +30,7 @@ cd retro-ball-game
 2.Install dependencies (Pygame):pip install pygame
 
 
-3.Usage python retro_ball_game.pyControls
+3.Usage:python retro_ball_game.py
 
 
 Player Controls:
