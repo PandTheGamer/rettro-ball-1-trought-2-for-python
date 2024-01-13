@@ -48,6 +48,9 @@ PAUSED = "paused"
 
 game_state = START_MENU
 
+# Fullscreen mode toggle
+fullscreen = False
+
 # Main game loop
 while True:
     for event in pygame.event.get():
@@ -55,77 +58,77 @@ while True:
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            if game_state == START_MENU:
-                if event.key == pygame.K_e:
-                    current_difficulty = EASY_DIFFICULTY
-                    game_state = RUNNING
-                elif event.key == pygame.K_n:
-                    current_difficulty = NORMAL_DIFFICULTY
-                    game_state = RUNNING
-                elif event.key == pygame.K_h:
-                    current_difficulty = HARD_DIFFICULTY
-                    game_state = RUNNING
-            elif game_state == RUNNING and event.key == pygame.K_p:
-                game_state = PAUSED
-            elif game_state == PAUSED and event.key == pygame.K_p:
+            if event.key == pygame.K_f:
+                fullscreen = not fullscreen
+                if fullscreen:
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
+                else:
+                    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+            elif event.key == pygame.K_e and game_state == START_MENU:
+                current_difficulty = EASY_DIFFICULTY
+                game_state = RUNNING
+            elif event.key == pygame.K_n and game_state == START_MENU:
+                current_difficulty = NORMAL_DIFFICULTY
+                game_state = RUNNING
+            elif event.key == pygame.K_h and game_state == START_MENU:
+                current_difficulty = HARD_DIFFICULTY
                 game_state = RUNNING
 
     keys = pygame.key.get_pressed()
 
-    if game_state == RUNNING:
-        # Update left paddle
-        if keys[pygame.K_UP] and left_paddle_pos[1] > 0:
-            left_paddle_pos[1] -= PADDLE_SPEED
-        if keys[pygame.K_DOWN] and left_paddle_pos[1] < HEIGHT - PADDLE_HEIGHT:
-            left_paddle_pos[1] += PADDLE_SPEED
+    # Update left paddle
+    if keys[pygame.K_UP] and left_paddle_pos[1] > 0:
+        left_paddle_pos[1] -= PADDLE_SPEED
+    if keys[pygame.K_DOWN] and left_paddle_pos[1] < HEIGHT - PADDLE_HEIGHT:
+        left_paddle_pos[1] += PADDLE_SPEED
 
-        # Update right paddle (AI)
-        if ball_velocity[0] > 0:  # Only update AI if the ball is moving towards the AI
-            target_pos = ball_pos[1] + (ball_pos[1] - right_paddle_pos[1]) * BALL_SPEED / ball_velocity[0]
-            if target_pos < right_paddle_pos[1] and right_paddle_pos[1] > 0:
-                right_paddle_pos[1] -= PADDLE_SPEED * current_difficulty
-            elif target_pos > right_paddle_pos[1] + PADDLE_HEIGHT and right_paddle_pos[1] < HEIGHT - PADDLE_HEIGHT:
-                right_paddle_pos[1] += PADDLE_SPEED * current_difficulty
+    # Update right paddle (AI)
+    if ball_velocity[0] > 0:  # Only update AI if the ball is moving towards the AI
+        target_pos = ball_pos[1] + (ball_pos[1] - right_paddle_pos[1]) * BALL_SPEED / ball_velocity[0]
+        if target_pos < right_paddle_pos[1] and right_paddle_pos[1] > 0:
+            right_paddle_pos[1] -= PADDLE_SPEED * current_difficulty
+        elif target_pos > right_paddle_pos[1] + PADDLE_HEIGHT and right_paddle_pos[1] < HEIGHT - PADDLE_HEIGHT:
+            right_paddle_pos[1] += PADDLE_SPEED * current_difficulty
 
-        # Update ball position
-        ball_pos[0] += ball_velocity[0]
-        ball_pos[1] += ball_velocity[1]
+    # Update ball position
+    ball_pos[0] += ball_velocity[0]
+    ball_pos[1] += ball_velocity[1]
 
-        # Bounce off the paddles
-        if (
-            left_paddle_pos[0] <= ball_pos[0] - BALL_RADIUS <= left_paddle_pos[0] + PADDLE_WIDTH
-            and left_paddle_pos[1] <= ball_pos[1] <= left_paddle_pos[1] + PADDLE_HEIGHT
-        ) or (
-            right_paddle_pos[0] - BALL_RADIUS <= ball_pos[0] <= right_paddle_pos[0] + PADDLE_WIDTH
-            and right_paddle_pos[1] <= ball_pos[1] <= right_paddle_pos[1] + PADDLE_HEIGHT
-        ):
-            ball_velocity[0] = -ball_velocity[0]
+    # Bounce off the paddles
+    if (
+        left_paddle_pos[0] <= ball_pos[0] - BALL_RADIUS <= left_paddle_pos[0] + PADDLE_WIDTH
+        and left_paddle_pos[1] <= ball_pos[1] <= left_paddle_pos[1] + PADDLE_HEIGHT
+    ) or (
+        right_paddle_pos[0] - BALL_RADIUS <= ball_pos[0] <= right_paddle_pos[0] + PADDLE_WIDTH
+        and right_paddle_pos[1] <= ball_pos[1] <= right_paddle_pos[1] + PADDLE_HEIGHT
+    ):
+        ball_velocity[0] = -ball_velocity[0]
 
-        # Bounce off the walls
-        if ball_pos[0] - BALL_RADIUS <= 0:
-            # Player scores a point
-            ai_score += 1
-            if ai_score == WINNING_SCORE:
-                print("AI wins!")
-                pygame.quit()
-                sys.exit()
-            # Reset ball position
-            ball_pos = [WIDTH // 2, HEIGHT // 2]
-            ball_velocity = [random.choice([-1, 1]) * BALL_SPEED, random.choice([-1, 1]) * BALL_SPEED]
+    # Bounce off the walls
+    if ball_pos[0] - BALL_RADIUS <= 0:
+        # Player scores a point
+        ai_score += 1
+        if ai_score == WINNING_SCORE:
+            print("AI wins!")
+            pygame.quit()
+            sys.exit()
+        # Reset ball position
+        ball_pos = [WIDTH // 2, HEIGHT // 2]
+        ball_velocity = [random.choice([-1, 1]) * BALL_SPEED, random.choice([-1, 1]) * BALL_SPEED]
 
-        elif ball_pos[0] + BALL_RADIUS >= WIDTH:
-            # AI scores a point
-            player_score += 1
-            if player_score == WINNING_SCORE:
-                print("Player wins!")
-                pygame.quit()
-                sys.exit()
-            # Reset ball position
-            ball_pos = [WIDTH // 2, HEIGHT // 2]
-            ball_velocity = [random.choice([-1, 1]) * BALL_SPEED, random.choice([-1, 1]) * BALL_SPEED]
+    elif ball_pos[0] + BALL_RADIUS >= WIDTH:
+        # AI scores a point
+        player_score += 1
+        if player_score == WINNING_SCORE:
+            print("Player wins!")
+            pygame.quit()
+            sys.exit()
+        # Reset ball position
+        ball_pos = [WIDTH // 2, HEIGHT // 2]
+        ball_velocity = [random.choice([-1, 1]) * BALL_SPEED, random.choice([-1, 1]) * BALL_SPEED]
 
-        if ball_pos[1] - BALL_RADIUS <= 0 or ball_pos[1] + BALL_RADIUS >= HEIGHT:
-            ball_velocity[1] = -ball_velocity[1]
+    if ball_pos[1] - BALL_RADIUS <= 0 or ball_pos[1] + BALL_RADIUS >= HEIGHT:
+        ball_velocity[1] = -ball_velocity[1]
 
     # Fill the screen with black
     screen.fill(BLACK)
