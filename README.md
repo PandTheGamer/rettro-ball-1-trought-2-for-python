@@ -1,5 +1,19 @@
-# rettro-ball-1-trought-2-for-python
-Controls: - Move Up: UP arrow key - Move Down: DOWN arrow key - Start/Pause: Space bar - Resume (while paused): Space bar  Difficulty Levels: - Easy: Press E - Normal: Press N - Hard: Press H  License: MIT License  Acknowledgements: Built with Pygame. Special thanks to OpenAI for the inspiration.
+# Retro Ball 1 and 2 for Python
 
-For the first verson controls are the same but no start or pause or difficulty AN press f on one or two to go full screen
+Controls:
+- Move Up: UP arrow key
+- Move Down: DOWN arrow key
 
+Fullscreen (press 'F' on launch):
+
+For Retro Ball 1:
+- Press 'F' to toggle fullscreen mode.
+
+For Retro Ball 2:
+- Press 'F' to toggle fullscreen mode.
+
+License: MIT License
+
+Acknowledgements:
+Built with Pygame.
+Special thanks to OpenAI for the inspiration.
