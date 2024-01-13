@@ -37,12 +37,10 @@ Player Controls:
 
 Move Up: UP arrow key
 Move Down: DOWN arrow key
-Start/Pause:
 
-Start game or pause: Space bar
-Resume (while paused):
+Start game or pause:p
 
-Resume game: Space bar
+Resume game: p
 Difficulty Levels
 Choose difficulty level from the start menu:
 
